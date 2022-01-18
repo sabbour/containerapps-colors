@@ -1,0 +1,45 @@
+extends layout
+
+
+    
+block content
+  script.
+    $(document).ready(function() {     
+      update();
+    });
+
+  script.
+    function update() {
+      $.get('/colors?timestamp=' + $.now()).done(
+          function(data) {
+            var li = $("ul#cluster li#"+data.host);
+            var updated = Date.now();
+            if(li.length>0) {
+              // update
+              console.log("Updating " + data.host);
+              li.replaceWith('<li id="'+data.host+'" updated="'+updated+'"><div style="padding: 10px; background-color: ' + data.color + '">' + data.host + '</div></li>');
+            }
+            else {
+              // create
+              console.log("Creating " + data.host);
+              $('ul#cluster').append('<li id="'+data.host+'" updated="'+updated+'"><div style="padding: 10px; background-color: ' + data.color + '">' + data.host + '</div></li>');
+            }
+
+            // delete stale
+            $("ul li").each(function(i) {
+              var lastUpdate=$(this).attr('updated');
+              var msAgo = $.now() - parseInt(lastUpdate);
+
+              if (msAgo>5000) {
+                console.log("** Node " + $(this).attr('id') + " was updated " + msAgo + " ms ago");
+                console.log("** Removing stale node " + $(this).attr('id'));
+                $(this).remove();
+              }
+
+            });
+          });
+      setTimeout(update,100);
+    }
+
+  h1= title
+  ul#cluster

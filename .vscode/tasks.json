@@ -1,0 +1,116 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "docker-build",
+			"label": "docker-build",
+			"platform": "node",
+			"dockerBuild": {
+				"dockerfile": "${workspaceFolder}/colorservice/Dockerfile",
+				"context": "${workspaceFolder}/colorservice",
+				"pull": true
+			},
+			"node": {
+				"package": "${workspaceFolder}/colorservice/package.json"
+			}
+		},
+		{
+			"type": "docker-run",
+			"label": "docker-run: release",
+			"dependsOn": [
+				"docker-build"
+			],
+			"platform": "node",
+			"node": {
+				"package": "${workspaceFolder}/colorservice/package.json"
+			}
+		},
+		{
+			"type": "docker-run",
+			"label": "docker-run: debug",
+			"dependsOn": [
+				"docker-build"
+			],
+			"dockerRun": {
+				"env": {
+					"DEBUG": "*",
+					"NODE_ENV": "development"
+				}
+			},
+			"node": {
+				"package": "${workspaceFolder}/colorservice/package.json",
+				"enableDebugging": true
+			}
+		},
+		{
+			"label": "build",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"build",
+				"${workspaceFolder}/colorservice/ColorService.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "publish",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish",
+				"${workspaceFolder}/colorservice/ColorService.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "watch",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"watch",
+				"run",
+				"${workspaceFolder}/colorservice/ColorService.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"type": "docker-build",
+			"label": "docker-build: debug",
+			"dependsOn": [
+				"build"
+			],
+			"dockerBuild": {
+				"tag": "containerappscolors:dev",
+				"target": "base",
+				"dockerfile": "${workspaceFolder}/colorservice/Dockerfile",
+				"context": "${workspaceFolder}",
+				"pull": true
+			},
+			"netCore": {
+				"appProject": "${workspaceFolder}/colorservice/ColorService.csproj"
+			}
+		},
+		{
+			"type": "docker-build",
+			"label": "docker-build: release",
+			"dependsOn": [
+				"build"
+			],
+			"dockerBuild": {
+				"tag": "containerappscolors:latest",
+				"dockerfile": "${workspaceFolder}/colorservice/Dockerfile",
+				"context": "${workspaceFolder}",
+				"pull": true
+			},
+			"netCore": {
+				"appProject": "${workspaceFolder}/colorservice/ColorService.csproj"
+			}
+		}
+	]
+}
