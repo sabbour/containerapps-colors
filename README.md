@@ -41,7 +41,7 @@ az containerapp create \
 --registry-password $REGISTRY_PASSWORD
 ```
 
-## Deploy the backend servuce (ASP.NET Core 6.0)
+## Deploy the backend service (ASP.NET Core 6.0)
 Deploy the backend, and enable Dapr.
 
 ```
