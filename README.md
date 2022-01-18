@@ -1,4 +1,7 @@
 # Color App sample using Dapr on Azure Container Apps
+The application consists of two components:
+- `colorservice` is an ASP.net Core 6.0 microservice that generates hexadecimal color codes.
+- `colorfront` is a Node.JS app that calls the `colorservice` via [Dapr service invocation](https://github.com/sabbour/containerapps-colors/blob/main/colorfront/routes/colors.js) to render the colors in the browser. Each color block corresponds to the hostname of the pod responding to the request.
 
 ## Create a Container App environment
 Follow the instructions here <https://docs.microsoft.com/en-us/azure/container-apps/get-started-existing-container-image?tabs=bash&pivots=container-apps-private-registry> to create a Log Analytics workspace and create the environment.
